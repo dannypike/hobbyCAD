@@ -1,0 +1,81 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build HobbyCAD",
+            "type": "shell",
+            "command": "./build.sh",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": true
+            }
+        },
+        {
+            "label": "Clean Build",
+            "type": "shell",
+            "command": "rm -rf build && mkdir build",
+            "group": "build",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": true
+            }
+        },
+        {
+            "label": "Configure CMake",
+            "type": "shell",
+            "command": "cd build && cmake ..",
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build with Make",
+            "type": "shell",
+            "command": "cd build && cmake --build . -j$(nproc)",
+            "group": "build",
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "cd build && ctest --output-on-failure",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tests (Debug)",
+            "type": "shell",
+            "command": "cd build/debug && ctest --output-on-failure",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build and Test",
+            "type": "shell",
+            "command": "cd build && cmake --build . -j$(nproc) && ctest --output-on-failure",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated",
+                "close": true
+            },
+            "problemMatcher": ["$gcc"]
+        }
+    ]
+}

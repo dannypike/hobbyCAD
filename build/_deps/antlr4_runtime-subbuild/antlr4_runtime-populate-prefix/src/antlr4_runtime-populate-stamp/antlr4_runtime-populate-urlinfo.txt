@@ -1,0 +1,12 @@
+# This is a generated file and its contents are an internal implementation detail.
+# The download step will be re-executed if anything in this file changes.
+# No other meaning or use of this file is supported.
+
+method=url
+command=/usr/bin/cmake;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/antlr4_runtime-populate-prefix/src/antlr4_runtime-populate-stamp/download-antlr4_runtime-populate.cmake;COMMAND;/usr/bin/cmake;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/antlr4_runtime-populate-prefix/src/antlr4_runtime-populate-stamp/verify-antlr4_runtime-populate.cmake;COMMAND;/usr/bin/cmake;-DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE;-P;/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/antlr4_runtime-populate-prefix/src/antlr4_runtime-populate-stamp/extract-antlr4_runtime-populate.cmake
+source_dir=/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-src
+work_dir=/home/dan/Projects/hobbyCAD/build/_deps
+url(s)=https://www.antlr.org/download/antlr4-cpp-runtime-4.13.2-source.zip
+hash=
+      no_extract=
+
