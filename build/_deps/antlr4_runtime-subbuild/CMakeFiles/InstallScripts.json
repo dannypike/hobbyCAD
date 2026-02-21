@@ -1,7 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

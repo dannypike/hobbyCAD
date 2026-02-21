@@ -1,3 +1,0 @@
-/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/CMakeFiles/antlr4_runtime-populate.dir
-/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/CMakeFiles/edit_cache.dir
-/home/dan/Projects/hobbyCAD/build/_deps/antlr4_runtime-subbuild/CMakeFiles/rebuild_cache.dir
