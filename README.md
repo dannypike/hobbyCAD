@@ -1,4 +1,4 @@
-# CadCam v0.1
+# hobbyCAD v0.1
 
 Standalone CAD application using ImGui (docking) + OpenCASCADE.
 Reads OpenSCAD `.scad` files and renders the geometry.
@@ -27,7 +27,7 @@ yay -S opencascade
 ### ImGui (docking branch)
 
 ```
-cd cadcam
+cd hobbyCAD
 git clone -b docking https://github.com/ocornut/imgui.git extern/imgui
 ```
 
@@ -39,7 +39,7 @@ git clone -b docking https://github.com/ocornut/imgui.git extern/imgui
 ## Build
 
 ```
-cd cadcam
+cd hobbyCAD
 mkdir build && cd build
 cmake ..
 make -j$(nproc)
