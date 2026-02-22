@@ -7,7 +7,17 @@ file
     ;
 
 statement
-    : functionCall SEMI
+    : functionCall SEMI            # PrimitiveStatement
+    | transformCall                # TransformStatement
+    ;
+
+transformCall
+    : ID LPAREN argumentList? RPAREN block
+    ;
+
+block
+    : LBRACE statement* RBRACE
+    | statement
     ;
 
 functionCall
@@ -52,6 +62,8 @@ LPAREN   : '(' ;
 RPAREN   : ')' ;
 LBRACKET : '[' ;
 RBRACKET : ']' ;
+LBRACE   : '{' ;
+RBRACE   : '}' ;
 EQUALS   : '=' ;
 
 LINE_COMMENT  : '//' ~[\r\n]* -> skip ;

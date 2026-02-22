@@ -3,6 +3,7 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRep_Tool.hxx>
+#include <BRepBuilderAPI_Transform.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Face.hxx>
@@ -13,8 +14,14 @@
 #include <GCPnts_TangentialDeflection.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <gp_Trsf.hxx>
+#include <gp_Ax1.hxx>
+#include <gp_Dir.hxx>
 
+#include <cmath>
 #include <map>
+
+static constexpr double DEG2RAD = M_PI / 180.0;
 
 // ---------------------------------------------------------------------------
 // Build a TopoDS_Shape for one ScadCube
@@ -26,6 +33,13 @@ static TopoDS_Shape makeCubeShape(const ScadCube& c) {
     } else {
         return BRepPrimAPI_MakeBox(c.dx, c.dy, c.dz).Shape();
     }
+}
+
+// ---------------------------------------------------------------------------
+// Apply a gp_Trsf to a shape
+// ---------------------------------------------------------------------------
+static TopoDS_Shape applyTransform(const TopoDS_Shape& shape, const gp_Trsf& trsf) {
+    return BRepBuilderAPI_Transform(shape, trsf, /*copy=*/true).Shape();
 }
 
 // ---------------------------------------------------------------------------
@@ -128,17 +142,67 @@ static void extractEdges(const TopoDS_Shape& shape, SceneMesh& mesh) {
 }
 
 // ---------------------------------------------------------------------------
+// Recursively build shapes from a scene node, accumulating transforms
+// ---------------------------------------------------------------------------
+static void buildNode(const ScadNode& node,
+                      const gp_Trsf& parentTrsf,
+                      SceneMesh& mesh)
+{
+    switch (node.type)
+    {
+    case ScadNodeType::Cube:
+    {
+        TopoDS_Shape shape = makeCubeShape(node.cube);
+        shape = applyTransform(shape, parentTrsf);
+        extractFaces(shape, mesh);
+        extractEdges(shape, mesh);
+        break;
+    }
+    case ScadNodeType::Translate:
+    {
+        gp_Trsf t;
+        t.SetTranslation(gp_Vec(node.tx, node.ty, node.tz));
+        gp_Trsf combined = parentTrsf * t;
+        for (const auto& child : node.children)
+            buildNode(*child, combined, mesh);
+        break;
+    }
+    case ScadNodeType::Rotate:
+    {
+        gp_Trsf combined = parentTrsf;
+        // OpenSCAD rotate([rx,ry,rz]) applies Z then Y then X (intrinsic)
+        if (node.tz != 0.0) {
+            gp_Trsf rz;
+            rz.SetRotation(gp_Ax1(gp_Pnt(0,0,0), gp_Dir(0,0,1)), node.tz * DEG2RAD);
+            combined = combined * rz;
+        }
+        if (node.ty != 0.0) {
+            gp_Trsf ry;
+            ry.SetRotation(gp_Ax1(gp_Pnt(0,0,0), gp_Dir(0,1,0)), node.ty * DEG2RAD);
+            combined = combined * ry;
+        }
+        if (node.tx != 0.0) {
+            gp_Trsf rx;
+            rx.SetRotation(gp_Ax1(gp_Pnt(0,0,0), gp_Dir(1,0,0)), node.tx * DEG2RAD);
+            combined = combined * rx;
+        }
+        for (const auto& child : node.children)
+            buildNode(*child, combined, mesh);
+        break;
+    }
+    }
+}
+
+// ---------------------------------------------------------------------------
 // Public API
 // ---------------------------------------------------------------------------
 
 SceneMesh buildMeshFromScad(const ScadModel& model) {
     SceneMesh mesh;
+    gp_Trsf identity;   // default-constructed = identity
 
-    for (const auto& cube : model.cubes) {
-        TopoDS_Shape shape = makeCubeShape(cube);
-        extractFaces(shape, mesh);
-        extractEdges(shape, mesh);
-    }
+    for (const auto& node : model.nodes)
+        buildNode(*node, identity, mesh);
 
     return mesh;
 }

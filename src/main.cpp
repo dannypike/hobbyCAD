@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+
 #include <GLFW/glfw3.h>
 
 #include "imgui.h"
@@ -17,16 +18,16 @@
 #include <sys/stat.h>
 
 // ---------------------------------------------------------------------------
-// Config directory: ~/.config/cadcam/
+// Config directory: ~/.config/hobbyCAD/
 // ---------------------------------------------------------------------------
 static std::string getConfigDir() {
     std::string dir;
     const char* xdg = std::getenv("XDG_CONFIG_HOME");
     if (xdg && xdg[0]) {
-        dir = std::string(xdg) + "/cadcam";
+        dir = std::string(xdg) + "/hobbyCAD";
     } else {
         const char* home = std::getenv("HOME");
-        dir = std::string(home ? home : ".") + "/.config/cadcam";
+        dir = std::string(home ? home : ".") + "/.config/hobbyCAD";
     }
     mkdir(dir.c_str(), 0755);
     return dir;
@@ -125,7 +126,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(geom.w, geom.h, "CadCam v0.1", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(geom.w, geom.h, "hobbyCAD", nullptr, nullptr);
     if (!window) {
         std::fprintf(stderr, "Failed to create GLFW window\n");
         glfwTerminate();
@@ -159,7 +160,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
     // App
     AppState app;
     app.viewport.init();
-    app.log("CadCam started.  File > Open SCAD to load a .scad file.");
+    app.log("hobbyCAD started.  File > Open SCAD to load a .scad file.");
 
     // --- Main loop ---
     while (!glfwWindowShouldClose(window)) {
@@ -214,7 +215,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
                 if (app.scadModel.empty()) {
                     app.log("No geometry found in file.");
                 } else {
-                    app.log("Parsed " + std::to_string(app.scadModel.cubes.size()) + " cube(s).");
+                    app.log("Parsed " + std::to_string(app.scadModel.nodes.size()) + " top-level node(s).");
                     app.sceneMesh = buildMeshFromScad(app.scadModel);
                     app.viewport.setMesh(app.sceneMesh);
                     app.viewport.zoomToFit(app.sceneMesh);
@@ -266,12 +267,7 @@ int main(int /*argc*/, char* /*argv*/[]) {
             } else {
                 ImGui::Text("File: %s", app.loadedFile.c_str());
                 ImGui::Separator();
-                ImGui::Text("Cubes: %zu", app.scadModel.cubes.size());
-                for (size_t i = 0; i < app.scadModel.cubes.size(); ++i) {
-                    const auto& c = app.scadModel.cubes[i];
-                    ImGui::BulletText("cube #%zu: [%.2f, %.2f, %.2f] center=%s",
-                        i + 1, c.dx, c.dy, c.dz, c.center ? "true" : "false");
-                }
+                ImGui::Text("Top-level nodes: %zu", app.scadModel.nodes.size());
                 ImGui::Separator();
                 ImGui::Text("Vertices: %zu", app.sceneMesh.vertices.size());
                 ImGui::Text("Triangles: %zu", app.sceneMesh.indices.size() / 3);
