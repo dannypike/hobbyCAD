@@ -1,9 +1,17 @@
 # Build output
-
 build/
+
+# clangd cache
+.cache/
 
 # VS Code workspace settings
 .vscode/
 
 # Legacy source folder
 cadcam/
+
+# Legacy archive
+cadcam.*
+
+# External dependencies
+extern/
